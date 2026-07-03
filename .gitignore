@@ -38,3 +38,6 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+### RAG source documents (large binaries — kept local, not versioned) ###
+src/main/resources/*.pdf
