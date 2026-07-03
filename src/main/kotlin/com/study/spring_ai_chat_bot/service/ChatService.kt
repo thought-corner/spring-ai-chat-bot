@@ -2,6 +2,8 @@ package com.study.spring_ai_chat_bot.service
 
 import com.study.spring_ai_chat_bot.controller.dto.ChatOptionsRequest
 import com.study.spring_ai_chat_bot.controller.dto.ChatRequest
+import com.study.spring_ai_chat_bot.domain.InquiryEvaluation
+import com.study.spring_ai_chat_bot.service.dto.InquiryEvaluationResult
 import org.springframework.ai.chat.client.ChatClient
 import org.springframework.ai.chat.client.advisor.api.Advisor
 import org.springframework.ai.chat.memory.ChatMemory
@@ -22,16 +24,25 @@ class ChatService(
     private val chatClient: ChatClient =
         chatClientBuilder.defaultAdvisors(*advisors).build()
 
-    fun stream(prompt: Prompt, conversationId: String) : Flux<String>? {
+    fun stream(prompt: Prompt, conversationId: String): Flux<String>? {
         return prepareRequest(prompt, conversationId)
             .stream()
             .content()
     }
 
-    fun call(prompt: Prompt, conversationId: String) : ChatResponse? {
+    fun call(prompt: Prompt, conversationId: String): ChatResponse? {
         return prepareRequest(prompt, conversationId)
             .call()
             .chatResponse()
+    }
+
+    fun inquiryEvaluation(prompt: Prompt, conversationId: String): InquiryEvaluationResult {
+        val evaluation = requireNotNull(
+            prepareRequest(prompt, conversationId)
+                .call()
+                .entity(InquiryEvaluation::class.java),
+        ) { "문의 평가 결과를 생성하지 못했습니다." }
+        return InquiryEvaluationResult.from(evaluation)
     }
 
     fun createPrompt(request: ChatRequest): Prompt {

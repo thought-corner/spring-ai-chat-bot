@@ -1,6 +1,7 @@
 package com.study.spring_ai_chat_bot.controller
 
 import com.study.spring_ai_chat_bot.controller.dto.ChatRequest
+import com.study.spring_ai_chat_bot.controller.dto.InquiryEvaluationResponse
 import com.study.spring_ai_chat_bot.service.ChatService
 import jakarta.validation.Valid
 import org.springframework.ai.chat.model.ChatResponse
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/chat")
@@ -27,5 +29,12 @@ class ChatController(
     fun stream(@RequestBody @Valid request: ChatRequest): Flux<String>? {
         val prompt = chatService.createPrompt(request)
         return chatService.stream(prompt, request.conversationId)
+    }
+
+    @PostMapping("/inquiry", produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun inquiry(@RequestBody @Valid request: ChatRequest): InquiryEvaluationResponse {
+        val prompt = chatService.createPrompt(request)
+        val result = chatService.inquiryEvaluation(prompt, request.conversationId)
+        return InquiryEvaluationResponse.from(result)
     }
 }
