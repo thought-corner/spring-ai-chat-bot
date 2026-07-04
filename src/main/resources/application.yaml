@@ -9,8 +9,19 @@ spring:
         model: hf.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF # https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF
       embedding:
         model: bge-m3
+    vectorstore:
+      elasticsearch:
+        index-name: spring-ai-document-index # 벡터 데이터가 저장될 엘라스틱서치 인덱스 이름
+        dimensions: 1024                     # bge-m3 모델의 고유 출력 벡터 차원 수 지정 (필수)
+        similarity: cosine                   # 벡터 간의 거리(유사도)를 계산할 수학 공식 (코사인 유사도)
+        initialize-schema: true              # 서버 구동 시 해당 인덱스가 없으면 자동으로 생성
+  elasticsearch:
+    uris: http://localhost:9200              # 로컬 도커로 띄운 상용 엘라스틱서치 서버 주소
 
 app:
+  vectorstore:
+    in-memory:
+      enabled: false
   rag:
     documents-location-pattern: classpath:research.pdf
   etl:

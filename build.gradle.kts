@@ -21,6 +21,9 @@ repositories {
 extra["springAiVersion"] = "2.0.0"
 
 dependencies {
+	implementation("org.springframework.ai:spring-ai-starter-vector-store-elasticsearch")
+	implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
+	implementation("org.springframework.ai:spring-ai-rag:2.0.0-M6")
 	implementation("io.github.oshai:kotlin-logging-jvm:7.0.0")
 	implementation("org.springframework.ai:spring-ai-vector-store:2.0.0-M6")			// vector-store
 	implementation("org.springframework.ai:spring-ai-tika-document-reader:2.0.0-M6")	// tika-reader
